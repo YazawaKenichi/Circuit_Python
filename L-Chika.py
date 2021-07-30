@@ -1,4 +1,5 @@
 # L チカ
+#参考 https://uepon.hatenadiary.com/entry/2021/06/10/225800
 
 import digitalio
 from board import *
