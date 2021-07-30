@@ -1,13 +1,11 @@
-#タクトスイッチを使ってオンボードの LED を点灯させる。
-#参考 https://uepon.hatenadiary.com/entry/2021/06/10/225800
+import board
+import digitalio
+import time
 
-import board    //ラズパイボードである以上必要
-import digitalio    //DigitalIO を利用するために必要
-
-led = digitalio.DigitalInOut(board.GP25)    //led を GP25 に設定
-led.direction = digitalio.Direction.OUTPUT  //GP25 を OUTPUT に設定
-button = digitalio.DigitalInOut(board.GP13) //button を GP13 に設定
-button.switch_to_input(pull = digitalio.Pull.Down)  //
+led = digitalio.DigitalInOut(board.GP25)
+led.direction = digitalio.Direction.OUTPUT
+button = digitalio.DigitalInOut(board.GP13)
+button.switch_to_input(pull = digitalio.Pull.UP)
 
 while True:
-    led.value = button.value
+    led.value = not button.value
