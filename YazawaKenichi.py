@@ -22,30 +22,30 @@ led.value = False
 while True:
     if not button.value:
         led.value = True
-#        keyboard.send(Keycode.ALT, Keycode.GRAVE_ACCENT)
-#        keyInput(Keycode.Y)
-        keyboard.send(Keycode.SHIFT, Keycode.Y)
+        keyboard.send(Keycode.ALT, Keycode.GRAVE_ACCENT)   #日本語入力に切り替える
+        keyInput(Keycode.Y)    #日本語入力するときは小文字の y で問題ない
+#        keyboard.send(Keycode.SHIFT, Keycode.Y) #英語入力するときは大文字の Y にしてほしい
         keyInput(Keycode.A)
         keyInput(Keycode.Z)
         keyInput(Keycode.A)
         keyInput(Keycode.W)
         keyInput(Keycode.A)
         keyInput(Keycode.SPACE)
-#        keyInput(Keycode.ENTER)
-#        keyInput(Keycode.K)
-        keyboard.send(Keycode.SHIFT, Keycode.K)
+        keyInput(Keycode.ENTER)    #日本語入力するときは一旦変換して確定してほしい
+        keyInput(Keycode.K)    #日本語入力するときは小文字の k で問題ない
+#        keyboard.send(Keycode.SHIFT, Keycode.K) #英語入力するときは大文字の K にしてほしい
         keyInput(Keycode.E)
         keyInput(Keycode.N)
-#        keyInput(Keycode.N)
+        keyInput(Keycode.N)    #日本語入力するときは n を二回入力してほしい
         keyInput(Keycode.I)
         keyInput(Keycode.C)
         keyInput(Keycode.H)
         keyInput(Keycode.I)
-#        keyInput(Keycode.SPACE)
-#        keyInput(Keycode.ENTER)
-        keyInput(Keycode.ENTER)
+        keyInput(Keycode.SPACE)    #日本語入力するときは変換してほしい
+        keyInput(Keycode.ENTER)    #日本語入力するときは確定してほしい
+        keyInput(Keycode.ENTER) #最後に改行
 
-#        keyboard.send(Keycode.ALT, Keycode.GRAVE_ACCENT)
+        keyboard.send(Keycode.ALT, Keycode.GRAVE_ACCENT)
         led.value = False
         time.sleep(0.1)
 
