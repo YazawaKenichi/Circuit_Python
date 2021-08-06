@@ -36,19 +36,19 @@ while len(leds) > i:
 i = 0
 """
 
-#列の定義
-col_array = [digitalio.DigitalInOut(board.GP0), digitalio.DigitalInOut(board.GP1), digitalio.DigitalInOut(board.GP2), digitalio.DigitalInOut(board.GP3), digitalio.DigitalInOut(board.GP4), digitalio.DigitalInOut(board.GP5)]
+#縦線はデータを読み取る。そのための GPIO のピンアサインをする。（列の初期化）
+col = [digitalio.DigitalInOut(board.GP0), digitalio.DigitalInOut(board.GP1), digitalio.DigitalInOut(board.GP2), digitalio.DigitalInOut(board.GP3), digitalio.DigitalInOut(board.GP4), digitalio.DigitalInOut(board.GP5)]
 i = 0
-while len(col_array) > i:
-    col_array[i].switch_to_input(pull = digitalio.Pull.UP)
+while len(col) > i:
+    col[i].switch_to_input(pull = digitalio.Pull.UP)
     i += 1
 
-#行の定義と初期化
-lines_array = [digitalio.DigitalInOut(board.GP22), digitalio.DigitalInOut(board.GP21), digitalio.DigitalInOut(board.GP20), digitalio.DigitalInOut(board.GP19), digitalio.DigitalInOut(board.GP18)]
+#横線は LOW と HIGH を入れ替える。そのための GPIO のピンアサインをする。（行の初期化）
+lines = [digitalio.DigitalInOut(board.GP22), digitalio.DigitalInOut(board.GP21), digitalio.DigitalInOut(board.GP20), digitalio.DigitalInOut(board.GP19), digitalio.DigitalInOut(board.GP18)]
 i = 0
-while len(lines_array) > i:
-    lines_array[i].direction = digitalio.Direction.OUTPUT
-    lines_array[i].value = True #全て HIGH にして初期化状態を作る
+while len(lines) > i:
+    lines[i].direction = digitalio.Direction.OUTPUT
+    lines[i].value = True #全て HIGH にして初期化状態を作る
     i += 1
 i = 0
 j = 0
@@ -57,17 +57,35 @@ j = 0
 scanning = False
 linecolshifting = False
 
-#スキャンした列の状態を 6bit で保存するための変数   #最小値 0 で最大値 0b111111 すなわち 63 となるはず
-colbuf = col_array
-while len(colbuf) > i:
-    colbuf[i] = 0   #ボタンが押されているときそこの bit が True になる  #ボタンが話されているときそこの bit が False になる
-    #その方が直感的にイメージしやすくてコーディングしやすい。
+#二次元配列の定義。全キーボードの ON OFF 状態を格納する。
+status = [False,    #Esc
+          False,    #
+          False,    #F1
+          False,    #F2
+          False,    #F3
+          False,    #F4
+          False,    #
+          False,    #F5
+          False,    #F6
+          False,    #F7
+          False,    #F8
+          False,    #
+          False,    #F9
+          False,    #F10
+          False,    #F11
+          False,    #F12
+          False,    #
+          False,    #
+          False,    #F2
+          False,    #F3
+          False,    #F4
+          ], [], [], [], [], []
 
 #スキャンした列の状態を 6bit に表すときに値を保存しておく変数
 colfactbuf = 0
 
 #スレーヴに関する変数
-slave_col_array[10] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]    #スレーヴから送られてきた各列の値を代入していく
+#slave_col[10] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]    #スレーヴから送られてきた各列の値を代入していく
 """~initialize"""
 
 """define"""
@@ -76,10 +94,10 @@ def linecolshift():
     i = 0
     j = 0
     linecolshifting = True
-    while len(lines_array) > i:
-        lines_array[i].value = 0    #linei+1s の電位を下げてこの行の読み取りを開始する。
-        while len(col_array) > j:  #colj+1 の電位を読み取って状況を把握する
-            if col_array[j] == 0:
+    while len(lines) > i:
+        lines[i].value = 0    #linei+1s の電位を下げてこの行の読み取りを開始する。
+        while len(col) > j:  #colj+1 の電位を読み取って状況を把握する
+            if col[j] == 0:
                 colfactbuf += math.pow(2, j)    #colfactbuf に 6bit でキーの状態を加算していく
             j += 1
         j = 0
