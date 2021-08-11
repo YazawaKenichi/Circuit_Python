@@ -1,4 +1,3 @@
-
 import board
 import time
 import usb_hid
@@ -58,38 +57,21 @@ scanning = False
 linecolshifting = False
 
 #二次元配列の定義。全キーボードの ON OFF 状態を格納する。
-status = [False,    #Esc
-          False,    #
-          False,    #F1
-          False,    #F2
-          False,    #F3
-          False,    #F4
-          False,    #
-          False,    #F5
-          False,    #F6
-          False,    #F7
-          False,    #F8
-          False,    #
-          False,    #F9
-          False,    #F10
-          False,    #F11
-          False,    #F12
-          False,    #
-          False,    #
-          False,    #F2
-          False,    #F3
-          False,    #F4
-          ], [], [], [], [], []
+#status[行][列]
+status = [[False, False, False, False, False, False], [False, False, False, False, False, False], [False, False, False, False, False, False ], [False, False, False, False, False, False ], [False, False, False, False, False, False ]]
 
-#スキャンした列の状態を 6bit に表すときに値を保存しておく変数
-colfactbuf = 0
+#二次元配列に対するキーコードを定義
+keyarray = [[keycode.CAPS_LOCK, keycode.ONE, keycode.TWO, keycode.THREE, keycode.FOUR, keycode.FIVE], [keycode.TAB, keycode.Q, keycode.W, keycode.E, keycode.R, keycode.T], [keycode.CAPS_LOCK, keycode.A, keycode.S, keycode.D, keycode.F, keycode.G], [keycode.LEFT_SHIFT, keycode.Z, keycode.X, keycode.C, keycode.V, keycode,B], [keycode.LEFT_CONTROL, keycode.WINDOWS, keycode.LEFT_ALT, keycode.DELETE, keycode.SPACE]]
+
+#押下されていたキーの数をカウントする
+pushcount = 0
 
 #スレーヴに関する変数
 #slave_col[10] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]    #スレーヴから送られてきた各列の値を代入していく
 """~initialize"""
 
 """define"""
-#キーをスキャンして状態を確認する実際のプログラム
+#キーをスキャンして状態を確認してキーコードを USB に置く
 def linecolshift():
     i = 0
     j = 0
@@ -97,12 +79,12 @@ def linecolshift():
     while len(lines) > i:
         lines[i].value = 0    #linei+1s の電位を下げてこの行の読み取りを開始する。
         while len(col) > j:  #colj+1 の電位を読み取って状況を把握する
-            if col[j] == 0:
-                colfactbuf += math.pow(2, j)    #colfactbuf に 6bit でキーの状態を加算していく
+            status[i][j] = not col[j]    #colfactbuf に 6bit でキーの状態を加算していく
+            if col[j] == False:
+                keyboard.send(keyarray[i][j])   #i, j のキーコードを出力する
             j += 1
         j = 0
-        colbuf[i] = colfactbuf  #
-        colfactbuf = 0
+        lines[i] = 1    #読み取りのために下げた電位をもとにも土素
         i += 1
     i = 0
     j = 0
@@ -120,6 +102,7 @@ def slave():
 """~define"""
 
 """debug define"""
+"""
 def debug():
     leds[0].value = True
     time.sleep(1)
@@ -133,13 +116,14 @@ def debug():
     leds[3].value = True
     time.sleep(1)
     leds[3].value = False
+"""
 """~debug define"""
 
 """main"""
 #メイン処理
-while 0:    #実行可能になったら 1 にしろ
-    debug()
+while 1:    #実行可能になったら 1 にしろ
+#    debug()
     keyscan()
-    slave() #スレーヴのスキャン結果を取得する関数
+#    slave() #スレーヴのスキャン結果を取得する関数
     time.sleep(0.05)    #チャタリング防止
 """~main"""
